@@ -263,3 +263,8 @@
   transform: rotate(-45deg);
   box-shadow: 0 4px 10px rgb(0 0 0 / 0.35);
 }
+
+/* "left" → "Left" without changing the data */
+.capitalize-first::first-letter {
+  text-transform: uppercase;
+}
