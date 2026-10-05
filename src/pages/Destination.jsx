@@ -15,6 +15,7 @@ import { CountrySection } from '../components/destination/CountrySection.jsx'
 import { TimeSection } from '../components/destination/TimeSection.jsx'
 import { MoneySection } from '../components/destination/MoneySection.jsx'
 import { PackingSection } from '../components/destination/PackingSection.jsx'
+import { PlanTripCard } from '../components/destination/PlanTripCard.jsx'
 import { diffFromLagos, formatClock, shortDiff } from '../lib/time.js'
 
 // Leaflet is only downloaded when a destination page is opened
@@ -80,6 +81,7 @@ export default function Destination() {
           />
         </div>
         <div className="min-w-0 space-y-6">
+          <PlanTripCard place={place} country={sections.country.data} />
           <TimeSection place={place} />
           <MoneySection country={sections.country} rates={sections.rates} retry={retry} />
           <CountrySection state={sections.country} onRetry={() => retry('country')} countryName={place.country} />

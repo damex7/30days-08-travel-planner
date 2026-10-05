@@ -48,12 +48,13 @@ export const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', '
 export const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 /**
- * "₦76,333", "€50.00", "GH₵ 857.70". Small amounts keep two decimals,
- * large ones round to whole units (nobody budgets ₦76,332.85).
+ * "₦76,333", "€50", "GH₵ 857.70". Whole amounts and anything over 1,000
+ * show no decimals (nobody budgets ₦76,332.85); small fractional amounts
+ * keep two.
  */
 export function formatMoney(amount, currency, { decimals } = {}) {
   if (amount == null || !Number.isFinite(amount)) return '–'
-  const digits = decimals ?? (Math.abs(amount) >= 1000 ? 0 : 2)
+  const digits = decimals ?? (Math.abs(amount) >= 1000 || Number.isInteger(amount) ? 0 : 2)
   try {
     return new Intl.NumberFormat('en-NG', {
       style: 'currency',
@@ -65,6 +66,11 @@ export function formatMoney(amount, currency, { decimals } = {}) {
     // A currency code Intl doesn't know: still show something sensible
     return `${currency} ${formatNumber(amount, digits)}`
   }
+}
+
+/** Money in a trip's currency. A trip saved without a currency shows a plain number, never a wrong symbol. */
+export function formatLocalMoney(amount, code) {
+  return code ? formatMoney(amount, code) : `${formatNumber(amount, Number.isInteger(amount) ? 0 : 2)} (local)`
 }
 
 export function formatNumber(n, digits = 0) {
