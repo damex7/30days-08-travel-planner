@@ -1,0 +1,265 @@
+@import "tailwindcss";
+
+/* Dark mode follows <html data-theme="dark">, set by index.html and useTheme */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+  Design tokens. Each one becomes a CSS variable (--color-zobo) AND a
+  Tailwind utility (bg-zobo, text-ink-soft, border-line, font-mono...).
+
+  The look: "zobo and boarding passes". Deep hibiscus (zobo) burgundy,
+  baobab-leaf sage, saffron passport stamps and bone-white ticket paper.
+  Cards are boarding passes with a perforated stub; numbers, times and
+  codes use a mono face, like a departure board.
+  Dark mode is the airport at night: warm charcoal with hibiscus-pink light.
+*/
+@theme {
+  --color-paper: #f6f1e7; /* page background */
+  --color-panel: #fffdf8; /* cards */
+  --color-panel-2: #efe7d8; /* recessed: inputs, hover, skeletons */
+  --color-ink: #24141a; /* main text: plum-black */
+  --color-ink-soft: #57434a; /* secondary text */
+  --color-ink-faint: #6f5d64; /* captions */
+  --color-line: #e6dccb; /* hairlines, perforations */
+  --color-line-strong: #8e7f78; /* input borders (3:1+) */
+
+  --color-zobo: #7a1638; /* primary: buttons, active nav, header */
+  --color-zobo-hover: #62102c;
+  --color-on-zobo: #fff7ef;
+  --color-zobo-soft: #f6e3e8;
+  --color-zobo-ink: #7a1638; /* zobo used as text */
+  --color-sage: #46613f; /* baobab: success, "packed", secondary text accents */
+  --color-sage-soft: #e2eadc;
+  --color-saffron: #e2a12b; /* stamps, markers (non-text) */
+  --color-focus: #9c5a00; /* focus ring: dark saffron, 4.8:1 on paper */
+  --color-saffron-ink: #855400; /* saffron as text */
+  --color-saffron-soft: #fbecc8;
+  --color-danger: #b3261e;
+  --color-danger-soft: #fbe1dd;
+
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "DM Serif Display", Georgia, ui-serif, serif;
+  --font-mono: "DM Mono", ui-monospace, Consolas, monospace;
+
+  --shadow-pass: 0 1px 0 rgb(36 20 26 / 0.05), 0 8px 22px -10px rgb(36 20 26 / 0.22);
+  --shadow-pop: 0 18px 44px rgb(36 20 26 / 0.25);
+
+  --animate-shimmer: shimmer 1.4s ease-in-out infinite;
+  --animate-fade-in: fade-in 200ms ease-out;
+
+  @keyframes shimmer {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+:root {
+  color-scheme: light;
+}
+
+/* Dark mode: same variable names, new values */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: #161210;
+  --color-panel: #211a18;
+  --color-panel-2: #2d2522;
+  --color-ink: #f5ece6;
+  --color-ink-soft: #d0c1ba;
+  --color-ink-faint: #ab9a93;
+  --color-line: #3b312d;
+  --color-line-strong: #8a7a73;
+
+  --color-zobo: #f28aa8; /* in the dark, hibiscus pink leads */
+  --color-zobo-hover: #f6a5bd;
+  --color-on-zobo: #2a0b15;
+  --color-zobo-soft: #3d1824;
+  --color-zobo-ink: #f6a5bd;
+  --color-sage: #a8c49f;
+  --color-sage-soft: #1f2b1d;
+  --color-saffron: #f2b84b;
+  --color-focus: #f2b84b;
+  --color-saffron-ink: #f5c76a;
+  --color-saffron-soft: #3a2c12;
+  --color-danger: #ff8a7f;
+  --color-danger-soft: #47201d;
+
+  --shadow-pass: 0 1px 0 rgb(0 0 0 / 0.4);
+  --shadow-pop: 0 18px 48px rgb(0 0 0 / 0.6);
+}
+
+@layer base {
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display font-normal;
+    letter-spacing: -0.005em;
+  }
+
+  /* One visible focus style for every interactive element */
+  :focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:not(:disabled):active,
+  .press:active {
+    transform: scale(0.97);
+  }
+
+  ::selection {
+    background: var(--color-saffron-soft);
+    color: var(--color-ink);
+  }
+
+  /* Number inputs: no spinners (they're tiny targets and fight the keyboard) */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /*
+    Header band: zobo with a faint route-map texture (dotted flight arcs),
+    drawn with gradients so it costs no image download.
+  */
+  .route-band {
+    background-color: #7a1638;
+    background-image:
+      radial-gradient(circle at 50% 50%, rgb(255 247 239 / 0.14) 1.4px, transparent 1.8px),
+      radial-gradient(120% 80% at 110% -10%, rgb(242 184 75 / 0.22), transparent 60%);
+    background-size:
+      14px 14px,
+      auto;
+  }
+  /* Inside the zobo band the light saffron ring reads better (5.9:1) */
+  .route-band :focus-visible {
+    outline-color: #f2b84b;
+  }
+  :root[data-theme="dark"] .route-band {
+    background-color: #3a0f1f;
+  }
+
+  /*
+    Boarding-pass perforation: a dashed tear line with two half-circle
+    notches cut out of the card edge. Put .perforation on the divider.
+  */
+  .perforation {
+    position: relative;
+    border-top: 2px dashed var(--color-line);
+  }
+  .perforation::before,
+  .perforation::after {
+    content: "";
+    position: absolute;
+    top: -9px;
+    width: 16px;
+    height: 16px;
+    border-radius: 9999px;
+    background: var(--color-paper);
+  }
+  .perforation::before {
+    left: -9px;
+  }
+  .perforation::after {
+    right: -9px;
+  }
+
+  /* Passport-stamp label used on section headings */
+  .stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 2px solid currentColor;
+    border-radius: 6px;
+    padding: 0.1rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transform: rotate(-2deg);
+  }
+
+  /* Card surface shared by every section */
+  .pass {
+    background: var(--color-panel);
+    border-radius: 1.25rem;
+    box-shadow: var(--shadow-pass);
+  }
+}
+
+/*
+  Leaflet in dark mode. OpenStreetMap only serves light tiles, so we invert
+  the tile images and rotate the hue back (water stays blue-ish, land dark).
+  Only the tile layer is filtered: the pin, controls and attribution keep
+  their real colours.
+*/
+:root[data-theme="dark"] .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9) saturate(0.6);
+}
+:root[data-theme="dark"] .leaflet-container {
+  background: #1d1a19;
+}
+:root[data-theme="dark"] .leaflet-control-attribution,
+:root[data-theme="dark"] .leaflet-bar a {
+  background: rgb(33 26 24 / 0.9);
+  color: var(--color-ink-soft);
+  border-color: var(--color-line);
+}
+:root[data-theme="dark"] .leaflet-control-attribution a {
+  color: var(--color-zobo-ink);
+}
+.leaflet-container {
+  font-family: var(--font-sans);
+}
+.leaflet-container:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.map-pin {
+  width: 26px;
+  height: 26px;
+  border-radius: 50% 50% 50% 0;
+  background: #7a1638;
+  border: 3px solid #f2b84b;
+  transform: rotate(-45deg);
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.35);
+}
