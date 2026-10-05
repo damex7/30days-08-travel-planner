@@ -98,7 +98,8 @@ async function fetchOnce(url, { select, source, headers, notFoundIsEmpty }) {
     }
     // fetch only rejects (rather than returning a bad status) when the request never got an answer
     const offline = typeof navigator !== 'undefined' && navigator.onLine === false
-    throw new ApiError(offline ? "You're offline. Reconnect and try again." : `Couldn't reach ${source}. Check your connection.`, {
+    const named = source.replace(/^The /, 'the ') // mid-sentence: "Couldn't reach the place search"
+    throw new ApiError(offline ? "You're offline. Reconnect and try again." : `Couldn't reach ${named}. Check your connection.`, {
       kind: 'offline',
       source,
       retryable: true,
