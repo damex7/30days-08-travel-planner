@@ -130,7 +130,8 @@ export const RULES = [
   },
   {
     id: 'evenings',
-    when: (s) => s.minLow >= 15 && s.maxHigh - s.minLow >= 10,
+    // Warm days, but evenings cool enough (15–19 °C) to want a layer; below 15 the jacket rule covers it
+    when: (s) => s.minLow >= 15 && s.minLow < 20 && s.maxHigh - s.minLow >= 8,
     items: [['light-layer', 'Light sweater for the evenings']],
     reason: (s, u) => `Evenings cool down to ${temp(s.minLow, u)}`,
   },
