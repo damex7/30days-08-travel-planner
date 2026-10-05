@@ -25,8 +25,18 @@ export function searchPlaces(name, { signal } = {}) {
     key: `geo:search:${term.toLowerCase()}`,
     source: SOURCE,
     // No matches come back as an object with no `results` key at all
-    select: (json) => (json?.results ?? []).map(normalisePlace).filter(Boolean),
+    select: (json) => rankPlaces((json?.results ?? []).map(normalisePlace).filter(Boolean)),
   })
+}
+
+/*
+  Open-Meteo ranks partial matches oddly: "Nair" lists a hamlet in India
+  above Nairobi. A traveller almost always means the big city, so bigger
+  places go first; places with no population figure go last. sort() is
+  stable, so ties keep Open-Meteo's order.
+*/
+function rankPlaces(places) {
+  return [...places].sort((a, b) => (b.population ?? -1) - (a.population ?? -1))
 }
 
 /** One place by its GeoNames id. Throws ApiError kind 'notfound' for an unknown id. */

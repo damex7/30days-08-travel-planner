@@ -19,7 +19,7 @@ import { session } from '../storage.js'
 
 const TIMEOUT_MS = 10_000
 // Bump when a normaliser changes shape, so old cached copies are ignored.
-const CACHE_VERSION = 'pp:v1:'
+const CACHE_VERSION = 'pp:v2:'
 
 export const MINUTE = 60_000
 export const HOUR = 60 * MINUTE
