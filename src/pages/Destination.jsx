@@ -14,6 +14,7 @@ import { TypicalYearSection } from '../components/destination/TypicalYearSection
 import { CountrySection } from '../components/destination/CountrySection.jsx'
 import { TimeSection } from '../components/destination/TimeSection.jsx'
 import { MoneySection } from '../components/destination/MoneySection.jsx'
+import { PackingSection } from '../components/destination/PackingSection.jsx'
 import { diffFromLagos, formatClock, shortDiff } from '../lib/time.js'
 
 // Leaflet is only downloaded when a destination page is opened
@@ -70,6 +71,13 @@ export default function Destination() {
         <div className="min-w-0 space-y-6">
           <WikiSection state={sections.wiki} onRetry={() => retry('wiki')} placeName={place.name} />
           <ForecastSection state={sections.forecast} onRetry={() => retry('forecast')} units={units} placeName={place.name} />
+          <PackingSection
+            place={place}
+            forecast={sections.forecast}
+            currencyCode={sections.country.data?.currencies?.[0]?.code}
+            units={units}
+            onRetry={() => retry('forecast')}
+          />
         </div>
         <div className="min-w-0 space-y-6">
           <TimeSection place={place} />
