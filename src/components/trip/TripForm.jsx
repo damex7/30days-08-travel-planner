@@ -25,10 +25,10 @@ export function TripForm({ initial = {}, defaultName, submitLabel, onSubmit, onC
   }
 
   const field =
-    'mt-1 min-h-11 w-full rounded-lg border-2 border-line-strong bg-panel px-3 font-mono text-ink focus:border-zobo focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-focus'
+    'mt-1 min-h-11 w-full min-w-0 rounded-lg border-2 border-line-strong bg-panel px-3 font-mono text-ink focus:border-zobo focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-focus'
 
   return (
-    <form onSubmit={submit} noValidate className="space-y-3">
+    <form onSubmit={submit} noValidate className="@container space-y-3">
       {showName && (
         <div>
           <label htmlFor={`${id}-name`} className="text-sm font-bold">
@@ -44,8 +44,10 @@ export function TripForm({ initial = {}, defaultName, submitLabel, onSubmit, onC
           />
         </div>
       )}
-      <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
-        <div>
+      {/* Sized by the form, not the viewport: in the destination sidebar the
+          card is narrow even on wide screens, and date inputs won't shrink */}
+      <div className="grid grid-cols-1 gap-3 @sm:grid-cols-2">
+        <div className="min-w-0">
           <label htmlFor={`${id}-start`} className="text-sm font-bold">
             First day
           </label>
@@ -63,7 +65,7 @@ export function TripForm({ initial = {}, defaultName, submitLabel, onSubmit, onC
             className={field}
           />
         </div>
-        <div>
+        <div className="min-w-0">
           <label htmlFor={`${id}-end`} className="text-sm font-bold">
             Last day
           </label>
